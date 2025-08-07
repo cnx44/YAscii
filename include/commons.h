@@ -1,0 +1,34 @@
+#ifndef COMMONS_H
+#define COMMONS_H
+
+#include<stdint.h>
+
+#define PNG_HEADER_SIZE 8
+
+/**
+ * struct Pixel Represents a single pixel with RGBA color components.
+ * - red:   Red component (0–255).
+ * - green: Green component (0–255).
+ * - blue:  Blue component (0–255).
+ * - alpha: Alpha (transparency) component (0–255), where 0 is fully transparent and 255 is fully opaque.
+ *
+ * This struct models a pixel using 8-bit per channel RGBA format.
+ */
+typedef struct Pixel{
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
+	uint8_t alpha;
+} Pixel;
+
+//TODO: insert doc here
+typedef struct AsciiImageObject{
+	int height, width;
+    int scale;
+    Pixel* original_image;
+    Pixel* edited_image;
+    char* ascii_image;
+	/*TODO: foo pointer, object like notation*/
+} AsciiImageObject;
+
+#endif 

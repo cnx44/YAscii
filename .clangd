@@ -1,0 +1,9 @@
+CompileFlags:
+  Add:
+    - -I.
+    - -Iinclude
+    - -Isrc/filters
+    - -std=c11
+    - -Wall
+    - -Wextra
+    - -O2
