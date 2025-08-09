@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "commons.h"
 #include "lanczos.h"
-
+#include "asciifier.h" 
 
 /*
  * array_mapping Computes the linear index in a 1D array from 2D matrix coordinates.
@@ -95,10 +95,9 @@ AsciiImageObject* image_struct_init(int width, int height, png_structp png_ptr, 
 	if(!return_ptr) exit(EXIT_FAILURE);
 
 	return_ptr->original_image 	= (Pixel*) malloc(sizeof(Pixel)*memory_size);
-    return_ptr->edited_image    = (Pixel*) malloc(sizeof(Pixel)*memory_size);
-	return_ptr->ascii_image     = (char*)  malloc(sizeof(char)* memory_size);
+	return_ptr->ascii_image     	= (char*)  malloc(sizeof(char)* memory_size);
 	if(!return_ptr->edited_image || !return_ptr->original_image) exit(EXIT_FAILURE);
-
+		
 	//Normalization all PNG format into a RGBA 8-bit
 	if (bit_depth == 16) 					png_set_strip_16(png_ptr);
 	if (color_type == PNG_COLOR_TYPE_PALETTE)		png_set_palette_to_rgb(png_ptr);
@@ -111,8 +110,10 @@ AsciiImageObject* image_struct_init(int width, int height, png_structp png_ptr, 
 	
 	//SUB-ROUTINE: store RGBA values in AsciiImageObject.original_image
 	png_bytep* row_pointers;
-	return_ptr->original_image 	= (Pixel*)malloc(memory_size * sizeof(Pixel));
 	return_ptr->edited_image 	= NULL;
+	return_ptr->width 		= width;
+	return_ptr->height		= height;
+	return_ptr->scale 		= 1;
 	int row_bytes 			= png_get_rowbytes(png_ptr, info_ptr);
 
 	row_pointers = malloc(sizeof(png_bytep) * height);
@@ -178,6 +179,11 @@ int main(int argc, char* argv[]){
 	height	= png_get_image_height(png_ptr, info_ptr);
 
 	image_struct = image_struct_init(width, height, png_ptr, info_ptr);
+	
+	//TODO: allocare lo spazio per edited_image prima di chiamare.
+	image_struct->edited_image = lanczos_scale(image_struct, 5);
+
+	asciifier(image_struct->original_image ,width/5, height/5);
 	
 	fclose(file_ptr);
 	return 0;

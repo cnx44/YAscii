@@ -1,0 +1,15 @@
+# File oggetto e binari
+*.o
+*.out
+*.exe
+
+# File di compilazione
+compile_commands.json
+
+# Cartella immagini di test
+test_imgs/
+
+# Cache e configurazioni locali
+.cache/
+.clangd
+

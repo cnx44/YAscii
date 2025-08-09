@@ -24,11 +24,10 @@ typedef struct Pixel{
 //TODO: insert doc here
 typedef struct AsciiImageObject{
 	int height, width;
-    int scale;
-    Pixel* original_image;
-    Pixel* edited_image;
-    char* ascii_image;
-	/*TODO: foo pointer, object like notation*/
+	int scale;
+	Pixel* original_image;
+	Pixel* edited_image;
+	char* ascii_image;
 } AsciiImageObject;
 
 #endif 

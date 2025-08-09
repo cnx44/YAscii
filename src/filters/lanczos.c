@@ -1,4 +1,32 @@
+#include <stdlib.h>
 #include "lanczos.h"
+
+/*
+* lanczos_point_convulution applies the 2D convultion to the sample matrix
+* - sample_matrix: Pointer to a flattened 2D matrix of size SAMPLE_SIZE x SAMPLE_SIZE holding the neighbours
+*                  of the target pixel
+*
+* This function perform a separable 2D convolution using the precomputed Lanczos Kenrnel by doing the following:
+* 1. For each row compute the 1D convultion with the Kenrnel
+* 2. applies the 1D convultion on each convulted value using the same kernel
+*
+* This assumes both lanczos_kern and sample_matrix have consistent dimesnion with SAMPLE_SIZE
+*
+* return the scalar valure from the 2D convultion of the given point
+*/
+static double lanczos_point_convulution(double* sample_matrix){
+    double convoluted_value = 0; 
+
+    for(int row = 0; row < SAMPLE_SIZE; row++){
+        double temp_convoluted_row=0;
+        for(int col = 0; col < SAMPLE_SIZE; col++){
+            temp_convoluted_row += lanczos_kernel[col] * sample_matrix[row * SAMPLE_SIZE + col];
+        }
+        convoluted_value += lanczos_kernel[row] * temp_convoluted_row;
+    }
+    
+    return convoluted_value;
+}
 
 /*
  * lanczos_scale rescale an image using Lanczos interpolation.

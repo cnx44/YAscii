@@ -9,7 +9,7 @@ CFLAGS   = -Wall -Wextra -Werror -O2 -std=c11 -I$(INCDIR) -I$(FILTERS)
 LDFLAGS  = -lpng -lz 
 
 # Sources
-SRC = $(SRCDIR)/main.c $(FILTERS)/lanczos.c
+SRC = $(SRCDIR)/main.c $(FILTERS)/lanczos.c $(SRCDIR)/asciifier.c
 OBJ = $(SRC:.c=.o)
 DEP = $(OBJ:.o=.d)
 

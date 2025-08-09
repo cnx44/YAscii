@@ -55,36 +55,23 @@ static inline bool is_inbound(int row, int col, int rows, int cols){
     return (row >= 0 && col >= 0 && col < cols && row < rows); 
 }
 
-
 /*
- * lanczos_point_convulution applies the 2D convultion to the sample matrix
- * - sample_matrix: Pointer to a flattened 2D matrix of size SAMPLE_SIZE x SAMPLE_SIZE holding the neighbours
- *                  of the target pixel
+ * lanczos_scale rescale an image using Lanczos interpolation.
+ * - sample:        Pointer to an AsciiImageObject containing the original image data.
+ * - scale_factor:  Integer factor by which the image will be downscaled.
  *
- * This function perform a separable 2D convolution using the precomputed Lanczos Kenrnel by doing the following:
- * 1. For each row compute the 1D convultion with the Kenrnel
- * 2. applies the 1D convultion on each convulted value using the same kernel
+ * The function perform a downscaling of an RGBA image using separable Lanczos lanczos_point_convulution
+ * 1. Allocate new buffer of Pixel structures to store the rescaled original_image
+ * 2. For each Pixel in the output it identifies the corresponding floating point source coordinates and 
+ * gathers the SAMPLE_SIZE * SAMPLE_SIZE neighbour around it
+ * 3. Convoluted values are clamped to the [0:255] range as per 8bit using Integer
  *
- * This assumes both lanczos_kern and sample_matrix have consistent dimesnion with SAMPLE_SIZE
+ * The convultion is zero padded for pixel outside the borders
  *
- * return the scalar valure from the 2D convultion of the given point
+ * return the pointer to the newly created Pixel struct array representing the scaled image
+ *
+ * The caller is responsible for freeing the returned memory.
  */
-static double lanczos_point_convulution(double* sample_matrix){
-    double convoluted_value = 0; 
-
-    for(int row = 0; row < SAMPLE_SIZE; row++){
-        double temp_convoluted_row=0;
-        for(int col = 0; col < SAMPLE_SIZE; col++){
-            temp_convoluted_row += lanczos_kernel[col] * sample_matrix[row * SAMPLE_SIZE + col];
-        }
-        convoluted_value += lanczos_kernel[row] * temp_convoluted_row;
-    }
-    
-    return convoluted_value;
-}
-
-
-
 Pixel* lanczos_scale(AsciiImageObject* src, int scale_factor);
 
 #endif
