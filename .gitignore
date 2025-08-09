@@ -5,6 +5,7 @@
 
 # File di compilazione
 compile_commands.json
+CODING_STYLE.md
 
 # Cartella immagini di test
 test_imgs/
