@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2025  Oliver Quin
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #include <stdlib.h>
 #include <wchar.h>
 #include "asciifier.h"
@@ -11,7 +28,9 @@
  * Declared as const to prevent accidental modification and stored as a
  * wide-character literal (L"") to support Unicode Braille, Legacy and block symbols.
  */
-const wchar_t* ascii_palettes = L"⠀⠁⠂⠄⠆⠇⡂⡃⡇⣂⣃⣇⣧⣷⣾⣿⣿";
+
+const wchar_t* ascii_palettes = L"⣿⣿⣾⣷⣧⣇⣃⣂⡇⡃⡂⠇⠆⠄⠂⠁⠀";
+//const wchar_t* ascii_palettes = L"⠀⠁⠂⠄⠆⠇⡂⡃⡇⣂⣃⣇⣧⣷⣾⣿⣿";
 //const char* ascii_palettes = " .,:;+*?0S#@";
 
 /*
@@ -57,7 +76,7 @@ wchar_t* asciify_image(Pixel* image, int height, int width){
 		for(int col = 0; col < width; col++){
 			double pixel_grey_level = greyscale_converter(image[row * width + col]);
 			pixel_grey_level = (pixel_grey_level < 0) ? 0 : (pixel_grey_level > 1) ? 1 : pixel_grey_level;
-			int palette_index = (int) pixel_grey_level * (double)(palette_size - 1);
+			int palette_index = (int) (pixel_grey_level * (double)(palette_size - 1));
 			asciified_image[row * width + col] = ascii_palettes[palette_index];
 		}
 	}

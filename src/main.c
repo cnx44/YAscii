@@ -1,4 +1,22 @@
+/*
+ * Copyright (C) 2025  Oliver Quin
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #include <stdio.h>
+#include <locale.h>
 #include <png.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -179,9 +197,21 @@ int main(int argc, char* argv[]){
 	height	= png_get_image_height(png_ptr, info_ptr);
 
 	image_struct = image_struct_init(width, height, png_ptr, info_ptr);
-	image_struct->edited_image = lanczos_scale(image_struct, 2);
-	image_struct->ascii_image = asciify_image(image_struct->original_image, height, width);
+	image_struct->edited_image = lanczos_scale(image_struct, 7);
+	image_struct->ascii_image = asciify_image(image_struct->edited_image, height/7, width/7);
 	
+
+	//Peak production code, jokes aside, it's just for testing until the interface is finished.
+	setlocale(LC_CTYPE, "");
+	fwide(stdout, 1);
+	for(int row = 0; row < height/7; row++){
+		for(int col = 0; col < width/7; col++){
+			wchar_t current_char = image_struct->ascii_image[array_mapping(row, col, width/7)]; 
+			wprintf(L"%lc", current_char);
+		}
+		wprintf(L"\n");
+	}
+
 	fclose(file_ptr);
 	return 0;
 }
