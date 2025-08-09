@@ -31,5 +31,5 @@ $(TARGET): $(OBJ)
 # Include eventual .d files
 -include $(DEP)
 
-clean:
-	rm -f $(TARGET) $(OBJ) $(DEP)
+clear:
+	rm -f $(TARGET) $(OBJ) $(DEP) out

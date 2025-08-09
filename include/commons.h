@@ -2,6 +2,7 @@
 #define COMMONS_H
 
 #include<stdint.h>
+#include <wchar.h>
 
 #define PNG_HEADER_SIZE 8
 
@@ -21,13 +22,25 @@ typedef struct Pixel{
 	uint8_t alpha;
 } Pixel;
 
-//TODO: insert doc here
+/*
+ * AsciiImageObject represents an image and its ASCII conversion state.
+ * -height:          Image height in pixels.
+ * -width:           Image width in pixels.
+ * -scale:           Scaling factor applied before asciifing process
+ * -original_image:  Pointer to the original pixel data (RGBA).
+ * -edited_image:    Pointer to the last version of the modified image.
+ * -ascii_image:     Pointer to the ASCII art representation (wchar_t array).
+ *
+ * This struct encapsulates both the source image and any derived
+ * representations, enabling the program to keep original and transformed
+ * data together.
+ */
 typedef struct AsciiImageObject{
 	int height, width;
 	int scale;
 	Pixel* original_image;
 	Pixel* edited_image;
-	char* ascii_image;
+	wchar_t* ascii_image;
 } AsciiImageObject;
 
 #endif 

@@ -95,8 +95,8 @@ AsciiImageObject* image_struct_init(int width, int height, png_structp png_ptr, 
 	if(!return_ptr) exit(EXIT_FAILURE);
 
 	return_ptr->original_image 	= (Pixel*) malloc(sizeof(Pixel)*memory_size);
-	return_ptr->ascii_image     	= (char*)  malloc(sizeof(char)* memory_size);
-	if(!return_ptr->edited_image || !return_ptr->original_image) exit(EXIT_FAILURE);
+	return_ptr->ascii_image     	= (wchar_t*)  malloc(sizeof(char)* memory_size);
+	//if(!return_ptr->edited_image || !return_ptr->original_image) exit(EXIT_FAILURE);
 		
 	//Normalization all PNG format into a RGBA 8-bit
 	if (bit_depth == 16) 					png_set_strip_16(png_ptr);
@@ -179,11 +179,8 @@ int main(int argc, char* argv[]){
 	height	= png_get_image_height(png_ptr, info_ptr);
 
 	image_struct = image_struct_init(width, height, png_ptr, info_ptr);
-	
-	//TODO: allocare lo spazio per edited_image prima di chiamare.
-	image_struct->edited_image = lanczos_scale(image_struct, 5);
-
-	asciifier(image_struct->original_image ,width/5, height/5);
+	image_struct->edited_image = lanczos_scale(image_struct, 2);
+	image_struct->ascii_image = asciify_image(image_struct->original_image, height, width);
 	
 	fclose(file_ptr);
 	return 0;
