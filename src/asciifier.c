@@ -20,18 +20,22 @@
 #include "asciifier.h"
 
 /*
- * ascii_palettes wide-character string representing the set of symbols used to map greyscale values to ASCII art.
+ * ascii_palettes array of wide-character strings representing symbol sets
+ *                used to map greyscale values to ASCII art.
  *
- * Each character in the string corresponds to a different brightness level,
- * starting from the darkest symbol at index 0 to the brightest at the end.
+ * Each string in the array is a complete palette 
  *
- * Declared as const to prevent accidental modification and stored as a
- * wide-character literal (L"") to support Unicode Braille, Legacy and block symbols.
+ * Declared as const to prevent accidental modification and stored as
+ * wide-character literals (L"...") to support Unicode Braille, block, and
+ * other extended symbols. The palette selection is determined at runtime
+ * based on the active Palette enum value.
  */
-
-const wchar_t* ascii_palettes = L"⣿⣿⣾⣷⣧⣇⣃⣂⡇⡃⡂⠇⠆⠄⠂⠁⠀";
-//const wchar_t* ascii_palettes = L"⠀⠁⠂⠄⠆⠇⡂⡃⡇⣂⣃⣇⣧⣷⣾⣿⣿";
-//const char* ascii_palettes = " .,:;+*?0S#@";
+const wchar_t* ascii_palettes[] = { 
+	L"⣿⣿⣾⣷⣧⣇⣃⣂⡇⡃⡂⠇⠆⠄⠂⠁⠀",
+	L"  ░▒▓█",
+	L" .:-=+*#%@",
+	L" .,:;+*?0S#@",
+};
 
 /*
  * greyscale_converter converts a pixel's RGB values to a greyscale intensity.
@@ -54,20 +58,23 @@ static double greyscale_converter(Pixel pixel){
 }
 
 /*
- * asciify_image converts an image to an ASCII representation using a palette.
- * -image:   Pointer to the array of pixels (input image data).
- * -height:  Number of rows in the image.
- * -width:   Number of columns in the image.
+ * asciify_image converts an image to an ASCII representation using a given palette.
+ * -image:    Pointer to the array of pixels (input image data).
+ * -height:   Number of rows in the image.
+ * -width:    Number of columns in the image.
+ * -palette:  Palette enum value specifying which character set to use for mapping.
  *
  * This function maps each pixel's greyscale value to a corresponding
- * character from the global wide-character palette 'ascii_palettes'.
+ * character from the selected wide-character palette in 'ascii_palettes'.
  * The output is a buffer of wchar_t containing one character per pixel.
  *
- * Returns: pointer to a newly allocated buffer on success, or NULL on failure.
+ * Returns: Pointer to a newly allocated buffer on success, or NULL on failure.
+ *          The caller is responsible for freeing the returned buffer.
  */
-wchar_t* asciify_image(Pixel* image, int height, int width){
+wchar_t* asciify_image(Pixel* image, int height, int width, Palette palette){
 	size_t byte = (size_t) height * (size_t) width * sizeof(wchar_t); 
-	int palette_size = (int) wcslen(ascii_palettes);
+	const wchar_t* palette_string = ascii_palettes[palette];
+	int palette_size = (int) wcslen(palette_string);
 	wchar_t* asciified_image = malloc(byte);
 
 	if(!asciified_image) return NULL;
@@ -77,7 +84,7 @@ wchar_t* asciify_image(Pixel* image, int height, int width){
 			double pixel_grey_level = greyscale_converter(image[row * width + col]);
 			pixel_grey_level = (pixel_grey_level < 0) ? 0 : (pixel_grey_level > 1) ? 1 : pixel_grey_level;
 			int palette_index = (int) (pixel_grey_level * (double)(palette_size - 1));
-			asciified_image[row * width + col] = ascii_palettes[palette_index];
+			asciified_image[row * width + col] = palette_string[palette_index];
 		}
 	}
 

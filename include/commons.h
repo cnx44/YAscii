@@ -60,4 +60,25 @@ typedef struct AsciiImageObject{
 	wchar_t* ascii_image;
 } AsciiImageObject;
 
+/*
+ * Palette - Enumeration of available character palettes for ASCII rendering.
+ *
+ * Each value corresponds to an index in the 'ascii_palettes' array, defining
+ * the set of characters used to represent brightness levels in ASCII art.
+ *
+ * -BRAILLE: Unicode Braille symbols, offering high resolution for gradients.
+ * -BLOCK:   Block characters (█▓▒░), providing a solid and bold look.
+ * -DENSE:   Dense ASCII characters (@%#*+=-:.), optimized for compact shading.
+ * -SMOOTH:  Smooth gradient characters (.,:;+*?0S#@), for finer tonal transitions.
+ * -PALETTE_COUNT: Total number of palettes available; not used as a palette itself.
+ */
+typedef enum {
+	BRAILLE,	//⣿⣿⣾⣷⣧⣇⣃⣂⡇⡃⡂⠇⠆⠄⠂⠁⠀
+	BLOCK,		//█▓▒░  
+	DENSE,		//@%#*+=-:.
+	SMOOTH,		//.,:;+*?0S#@
+	PALETTE_COUNT
+} Palette;
+
+
 #endif 

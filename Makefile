@@ -1,35 +1,28 @@
-# Directory
-INCDIR   = include
+CC       = gcc
+CFLAGS   = -Wall -Wextra -Werror -O2 -std=c11 -Iinclude -Isrc/filters
+LDFLAGS  = -lpng -lz
+
 SRCDIR   = src
 FILTERS  = $(SRCDIR)/filters
 
-# Tools
-CC       = gcc
-CFLAGS   = -Wall -Wextra -Werror -O2 -std=c11 -I$(INCDIR) -I$(FILTERS)
-LDFLAGS  = -lpng -lz 
+SRCS := $(wildcard $(SRCDIR)/*.c $(FILTERS)/*.c)
+OBJS := $(SRCS:.c=.o)
+DEPS := $(OBJS:.o=.d)
 
-# Sources
-SRC = $(SRCDIR)/main.c $(FILTERS)/lanczos.c $(SRCDIR)/asciifier.c
-OBJ = $(SRC:.c=.o)
-DEP = $(OBJ:.o=.d)
-
-# Target
 TARGET = ascii_wallpaper
 
-# Rules
 .PHONY: all clean
-
 all: $(TARGET)
 
-$(TARGET): $(OBJ)
-	$(CC) $(OBJ) $(LDFLAGS) -o $@
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) $(LDFLAGS) -o $@
 
-# Compilation + dependencies  
+# compila + genera file .d accanto ai .o
 %.o: %.c
-	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+	$(CC) $(CFLAGS) -MMD -MP -MF $(@:.o=.d) -c $< -o $@
 
-# Include eventual .d files
--include $(DEP)
+-include $(DEPS)
 
 clear:
-	rm -f $(TARGET) $(OBJ) $(DEP) out
+	rm -f $(TARGET) $(OBJS) $(DEPS)
+

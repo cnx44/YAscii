@@ -20,6 +20,7 @@
 #include <png.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include "commons.h"
 #include "lanczos.h"
 #include "asciifier.h" 
@@ -162,15 +163,64 @@ AsciiImageObject* image_struct_init(int width, int height, png_structp png_ptr, 
 	return return_ptr;
 }
 
-int main(int argc, char* argv[]){
-	// SUB-ROUTINE: Validate input and open file
-	if(argc != 2){
+/*
+ * Global variable holding the currently selected rendering palette.
+ * Initialized to BRAILLE by default; may be overridden via command-line options.
+ */
+Palette g_palette = BRAILLE;
+
+/*
+ * args_parser parses command-line arguments and sets global configuration.
+ * -argc: Argument count from main().
+ * -argv: Argument vector from main().
+ *
+ * This function ensures that at least one file path is provided.
+ * It processes optional flags such as `-p` / `--palette` to configure
+ * the rendering palette. Any unknown option or missing value will cause
+ * the program to terminate with an error message.
+ *
+ * Side effects:
+ * - Sets the global `g_palette` variable according to the provided option.
+ * - Terminates the program on invalid input via exit(EXIT_FAILURE).
+ */
+static inline void args_parser(int argc, char* argv[]){
+	if(argc < 2){
 		fprintf(stderr, "A single file path argument is required\n");
 		exit(EXIT_FAILURE);
 	}
 	
+	for(int i = 2; i < argc; i++){
+		char* arg = argv[i];
+
+		if(strcmp(arg, "-p") == 0 || strcmp(arg, "--palette") == 0){	//Palette argument
+			if(i++ >= argc){
+				fprintf(stderr, "Missing value for option %s", arg);
+				exit(EXIT_FAILURE);
+			}
+
+			char* palette = argv[i];
+
+			if(strcmp(palette, "br") == 0 || strcmp(palette, "braille") == 0) g_palette = BRAILLE; 
+			else if(strcmp(palette, "bl") == 0 || strcmp(palette, "block") == 0) g_palette = BLOCK; 
+			else if(strcmp(palette, "ds") == 0 || strcmp(palette, "dense") == 0) g_palette = DENSE; 
+			else if(strcmp(palette, "sm") == 0 || strcmp(palette, "smoth") == 0) g_palette = SMOOTH; 
+			else{
+				fprintf(stderr, "Unknown palette: %s\n", palette);
+				exit(EXIT_FAILURE);
+			}	
+		}else{
+			fprintf(stderr, "Unknown option: %s", arg);
+			exit(EXIT_FAILURE);
+		}		
+	}	
+}
+
+int main(int argc, char* argv[]){
+	args_parser(argc, argv);
+
 	FILE* file_ptr = input_validator(argv[1]);
 	if(!file_ptr){
+		printf("Error during the file reading");
 		exit(EXIT_FAILURE);
 	}
 
@@ -195,23 +245,26 @@ int main(int argc, char* argv[]){
 
 	width 	= png_get_image_width(png_ptr, info_ptr);
 	height	= png_get_image_height(png_ptr, info_ptr);
+	
+	//TODO: refactor after cli command are completed
+	int sf = 5;
 
 	image_struct = image_struct_init(width, height, png_ptr, info_ptr);
-	image_struct->edited_image = lanczos_scale(image_struct, 7);
-	image_struct->ascii_image = asciify_image(image_struct->edited_image, height/7, width/7);
+	image_struct->edited_image = lanczos_scale(image_struct, sf);
+	image_struct->ascii_image = asciify_image(image_struct->edited_image, height/sf, width/sf, g_palette);
 	
 
 	//Peak production code, jokes aside, it's just for testing until the interface is finished.
 	setlocale(LC_CTYPE, "");
 	fwide(stdout, 1);
-	for(int row = 0; row < height/7; row++){
-		for(int col = 0; col < width/7; col++){
-			wchar_t current_char = image_struct->ascii_image[array_mapping(row, col, width/7)]; 
+	for(int row = 0; row < height/sf; row++){
+		for(int col = 0; col < width/sf; col++){
+			wchar_t current_char = image_struct->ascii_image[array_mapping(row, col, width/sf)]; 
 			wprintf(L"%lc", current_char);
 		}
 		wprintf(L"\n");
 	}
 
 	fclose(file_ptr);
-	return 0;
+	return EXIT_SUCCESS;
 }
