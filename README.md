@@ -67,6 +67,7 @@ Pull requests and issue reports are welcome. Please format code with gcc warning
 ## License
 This project is licensed under the GNU General Public License v3.0. See the LICENSE file for details.
 
+```text
 0SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 S#######################################################
 S#######################################################
@@ -119,6 +120,7 @@ S################0                    .#################
 S################S                    .#################
 S################S                    .#################
 S#######################################################
+```
 S#######################################################
 S#######################################################
 S#######################################################
