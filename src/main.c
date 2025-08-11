@@ -247,7 +247,7 @@ int main(int argc, char* argv[]){
 	height	= png_get_image_height(png_ptr, info_ptr);
 	
 	//TODO: refactor after cli command are completed
-	int sf = 5;
+	int sf = 7;
 
 	image_struct = image_struct_init(width, height, png_ptr, info_ptr);
 	image_struct->edited_image = lanczos_scale(image_struct, sf);
