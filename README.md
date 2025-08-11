@@ -56,8 +56,8 @@ If no palette is specified, **BRAILLE** is used by default
 
 Examples:
 ```bash
-./ascii_wallpaper -p block path/to/image.png
-./ascii_wallpaper --palette dense path/to/image.png
+./ascii_wallpaper path/to/image.png -p block 
+./ascii_wallpaper path/to/image.png --palette dense 
 ```
 
 ## Contributing
