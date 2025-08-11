@@ -12,11 +12,11 @@ It uses a separable Lanczos convolution filter to downscale images and then maps
 - Downscales images using a separable Lanczos convolution filter.
 - Converts 8-bit RGBA pixels to greyscale luminance values.
 - Maps luminance to a wide-character palette, including Unicode Braille symbols.
+- Multiple ASCII palettes.
 
 ## Planned Features 
 - Support for JPEG/JPG input.
 - ANSI color output for richer terminal rendering.
-- Multiple ASCII palettes.
 - Additional convolution filters.
 - Both a TUI interface and a simple CLI command.
 

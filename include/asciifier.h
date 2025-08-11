@@ -34,7 +34,7 @@
 #define BLUE_CONVERSION_CONSTANT 	0.0722
 
 /*
- * ascii_palettes array of wide-character strings representing symbol sets
+* ascii_palettes array of wide-character strings representing symbol sets
  *                used to map greyscale values to ASCII art.
  *
  * Each string in the array is a complete palette 
