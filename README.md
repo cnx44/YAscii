@@ -62,19 +62,19 @@ If no palette is specified, **BRAILLE** is used by default
   ./YAscii path/to/image.png -p braille
   ```
 
-- **-s / --scale**  
-  Sets the scale factor (integer).  
+**-s / --scale**  
+Sets the scale factor (integer).  
 
-  Example:
-  ```bash
-  ./YAscii path/to/image.png -s 2
-  ```
+Example:
+```bash
+./YAscii path/to/image.png -s 2
+```
 
 Any unknown option or missing value will result in an error and program termination.
 
 
 
-Examples:
+Usage examples:
 ```bash
 ./YAscii path/to/image.png -p block -s 2
 ./YAscii path/to/image.png --palette dense --scale 5 
