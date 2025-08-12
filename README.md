@@ -22,9 +22,12 @@ It uses a separable Lanczos convolution filter to downscale images and then maps
 
 ## Requirements
 
-- GCC or a compatible C compiler
-- `make`
-- [libpng](http://www.libpng.org/pub/png/libpng.html) and zlib development libraries
+- GCC or a compatible C11 compiler  
+- make build tool  
+- [libpng](http://www.libpng.org/pub/png/libpng.html) development library  
+- [zlib](https://zlib.net/) development library  
+
+⚠ Some additional dependencies might be required depending on your system configuration (headers and pkg-config files for libpng/zlib must be available).
 
 ## Build
 
@@ -32,17 +35,17 @@ It uses a separable Lanczos convolution filter to downscale images and then maps
 make
 ```
 
-The resulting binary ascii_wallpaper is created in the repository root.
+This will produce the executable YAscii in the repository root.
 
 ## Usage
 
-Provide a single PNG file path:
+Basic usage with a single PNG file path:
 
 ```bash
-./ascii_wallpaper path/to/image.png
+./YAscii path/to/image.png
 ```
 
-### Palette selection
+Optional parameters:
 
 You can choose a palette with `-p` or `--palette` followed by one of the names or aliases below:
 If no palette is specified, **BRAILLE** is used by default
@@ -53,11 +56,28 @@ If no palette is specified, **BRAILLE** is used by default
 | BLOCK    | `bl`, `block`      | █▓▒░                              |
 | DENSE    | `ds`, `dense`      | @%#*+=-:.                          |
 | SMOOTH   | `sm`, `smooth`     | .,:;+*?0S#@                        |
+  Example:
+
+```bash
+  ./YAscii path/to/image.png -p braille
+  ```
+
+- **-s / --scale**  
+  Sets the scale factor (integer).  
+
+  Example:
+  ```bash
+  ./YAscii path/to/image.png -s 2
+  ```
+
+Any unknown option or missing value will result in an error and program termination.
+
+
 
 Examples:
 ```bash
-./ascii_wallpaper path/to/image.png -p block 
-./ascii_wallpaper path/to/image.png --palette dense 
+./YAscii path/to/image.png -p block -s 2
+./YAscii path/to/image.png --palette dense --scale 5 
 ```
 
 ## Contributing
