@@ -2,10 +2,13 @@
 *.o
 *.out
 *.exe
+*.d
 
 # File di compilazione
 compile_commands.json
 CODING_STYLE.md
+
+YAscii
 
 # Cartella immagini di test
 test_imgs/

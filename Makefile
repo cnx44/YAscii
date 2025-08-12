@@ -24,4 +24,5 @@ $(TARGET): $(OBJS)
 -include $(DEPS)
 
 clear:
-	rm -f $(TARGET) $(OBJS) $(DEPS)
+	rm -f $(TARGET) $(OBJS) $(DEPS) \
+	      $(SRCDIR)/*.d $(FILTERS)/*.d
