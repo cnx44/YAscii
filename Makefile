@@ -11,7 +11,7 @@ DEPS := $(OBJS:.o=.d)
 
 TARGET = YAscii 
 
-.PHONY: all clean
+.PHONY: all clear
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
