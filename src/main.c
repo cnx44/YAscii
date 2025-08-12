@@ -172,18 +172,23 @@ Palette g_palette = BRAILLE;
 uint8_t g_scale_factor = 1;
 
 /*
- * args_parser parses command-line arguments and sets global configuration.
- * -argc: Argument count from main().
- * -argv: Argument vector from main().
+ * args_parser parses command-line arguments and configures the program's
+ * global settings.
+ * - argc: number of arguments passed to main().
+ * - argv: array of strings containing the arguments passed to main().
  *
- * This function ensures that at least one file path is provided.
- * It processes optional flags such as `-p` / `--palette` to configure
- * the rendering palette. Any unknown option or missing value will cause
- * the program to terminate with an error message.
+ * Behavior:
+ *  - Ensures that at least one file path is provided as a required argument.
+ *  - Handles optional flags:
+ *      - "-p" / "--palette": sets the rendering palette ('BRAILLE', 'BLOCK', 'DENSE', 'SMOOTH').
+ *      - "-s" / "--scale": sets the scale factor as an integer.
+ *  - Any unknown option or missing/invalid value causes the program
+ *    to terminate immediately with an error message on stderr.
  *
  * Side effects:
- * - Sets the global `g_palette` variable according to the provided option.
- * - Terminates the program on invalid input via exit(EXIT_FAILURE).
+ *  - Modifies the global variables 'g_palette' and 'g_scale_factor'
+ *    according to the provided options.
+ *  - Terminates the program with exit(EXIT_FAILURE) on invalid input.
  */
 static inline void args_parser(int argc, char* argv[]){
 	if(argc < 2){
@@ -195,12 +200,12 @@ static inline void args_parser(int argc, char* argv[]){
 		char* arg = argv[i];
 
 		if(strcmp(arg, "-p") == 0 || strcmp(arg, "--palette") == 0){	//Palette argument
-			if(++i>= argc){ //update before controll
+			if(i+1>= argc){ //update before controll
 				fprintf(stderr, "Missing value for option %s", arg);
 				exit(EXIT_FAILURE);
 			}
 
-			char* palette = argv[i];
+			char* palette = argv[++i];
 
 			if(strcmp(palette, "br") == 0 || strcmp(palette, "braille") == 0) g_palette = BRAILLE; 
 			else if(strcmp(palette, "bl") == 0 || strcmp(palette, "block") == 0) g_palette = BLOCK; 
@@ -210,11 +215,24 @@ static inline void args_parser(int argc, char* argv[]){
 				fprintf(stderr, "Unknown palette: %s\n", palette);
 				exit(EXIT_FAILURE);
 			}	
+		}else if(strcmp(arg, "-s") == 0 || strcmp(arg, "--scale") == 0){	//Scale argument
+			if(i+1>= argc){ //update before controll
+				fprintf(stderr, "Missing value for option %s", arg);
+				exit(EXIT_FAILURE);
+			}
+			
+			char* endptr;
+			g_scale_factor = (int)strtol(argv[++i], &endptr, 10);
+			
+			if(*endptr != '\0'){
+				fprintf(stderr, "Invalid scale factor %s", argv[i]);
+				exit(EXIT_FAILURE);;
+			}					
 		}else{
 			fprintf(stderr, "Unknown option: %s", arg);
 			exit(EXIT_FAILURE);
 		}		
-	}	
+	}
 }
 
 int main(int argc, char* argv[]){
