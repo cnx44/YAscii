@@ -1,6 +1,6 @@
 CC       = gcc
-CFLAGS   = -Wall -Wextra -Werror -O2 -std=c11 -Iinclude -Isrc/filters
-LDFLAGS  = -lpng -lz
+CFLAGS   = -Wall -Wextra -Werror -O2 -std=c11 -Iinclude -Isrc/filters $(shell pkg-config --cflags libpng)
+LDFLAGS  = $(shell pkg-config --libs libpng)
 
 SRCDIR   = src
 FILTERS  = $(SRCDIR)/filters
@@ -9,7 +9,7 @@ SRCS := $(wildcard $(SRCDIR)/*.c $(FILTERS)/*.c)
 OBJS := $(SRCS:.c=.o)
 DEPS := $(OBJS:.o=.d)
 
-TARGET = ascii_wallpaper
+TARGET = YAscii 
 
 .PHONY: all clean
 all: $(TARGET)
@@ -25,4 +25,3 @@ $(TARGET): $(OBJS)
 
 clear:
 	rm -f $(TARGET) $(OBJS) $(DEPS)
-

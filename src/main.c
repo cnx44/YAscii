@@ -169,6 +169,8 @@ AsciiImageObject* image_struct_init(int width, int height, png_structp png_ptr, 
  */
 Palette g_palette = BRAILLE;
 
+uint8_t g_scale_factor = 1;
+
 /*
  * args_parser parses command-line arguments and sets global configuration.
  * -argc: Argument count from main().
@@ -193,7 +195,7 @@ static inline void args_parser(int argc, char* argv[]){
 		char* arg = argv[i];
 
 		if(strcmp(arg, "-p") == 0 || strcmp(arg, "--palette") == 0){	//Palette argument
-			if(i++ >= argc){
+			if(++i>= argc){ //update before controll
 				fprintf(stderr, "Missing value for option %s", arg);
 				exit(EXIT_FAILURE);
 			}
@@ -247,19 +249,17 @@ int main(int argc, char* argv[]){
 	height	= png_get_image_height(png_ptr, info_ptr);
 	
 	//TODO: refactor after cli command are completed
-	int sf = 7;
-
 	image_struct = image_struct_init(width, height, png_ptr, info_ptr);
-	image_struct->edited_image = lanczos_scale(image_struct, sf);
-	image_struct->ascii_image = asciify_image(image_struct->edited_image, height/sf, width/sf, g_palette);
+	image_struct->edited_image = lanczos_scale(image_struct, g_scale_factor);
+	image_struct->ascii_image = asciify_image(image_struct->edited_image, height/g_scale_factor, width/g_scale_factor, g_palette);
 	
 
 	//Peak production code, jokes aside, it's just for testing until the interface is finished.
 	setlocale(LC_CTYPE, "");
 	fwide(stdout, 1);
-	for(int row = 0; row < height/sf; row++){
-		for(int col = 0; col < width/sf; col++){
-			wchar_t current_char = image_struct->ascii_image[array_mapping(row, col, width/sf)]; 
+	for(int row = 0; row < height/g_scale_factor; row++){
+		for(int col = 0; col < width/g_scale_factor; col++){
+			wchar_t current_char = image_struct->ascii_image[array_mapping(row, col, width/g_scale_factor)]; 
 			wprintf(L"%lc", current_char);
 		}
 		wprintf(L"\n");
